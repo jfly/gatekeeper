@@ -6,9 +6,16 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.swp
 
 pids
 logs
 results
 
 npm-debug.log
+
+node_modules/
+config.json
+server.crt
+server.csr
+server.key
