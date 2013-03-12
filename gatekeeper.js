@@ -82,7 +82,7 @@ app.get("/password-entered.xml", function(req, res) {
 	var response;
 	if(digits == "12345") {
 		response = xmlbuilder.create("Response");
-                var correctClip = pickRandomFile("media/wrong");
+                var correctClip = pickRandomFile("media/correct");
                 if(correctClip) {
                    response.ele("Play", null, getUrl(req, correctClip));
                 } else {
