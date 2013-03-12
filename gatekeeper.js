@@ -75,5 +75,5 @@ app.get("/password-entered.xml", function(req, res) {
 });
 
 app.get("/gatekeeper-callend.xml", function(req, res) {
-	console.log("Call ended: " + JSON.stringify(req.query));
+	console.log("Call ended");
 });
