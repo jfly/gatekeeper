@@ -99,4 +99,6 @@ app.get("/password-entered.xml", function(req, res) {
 
 app.get("/gatekeeper-callend.xml", function(req, res) {
 	console.log("Call ended");
+	res.header("Content-Type", "text/plain");
+        res.end("Bye!");
 });
