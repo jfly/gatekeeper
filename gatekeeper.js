@@ -41,14 +41,23 @@ app.use(auth);
 app.use("/media", express.static(__dirname + "/media"));
 
 function getUrl(req, file) {
-	return req.protocol + "://" + req.get('host') + ( file || "" );
+	return req.protocol + "://" + req.get('host') + ( "/" + file || "" );
+}
+
+function pickRandomFile(folder) {
+   var files = fs.readdirSync(folder);
+   if(files.length == 0) {
+      return null;
+   }
+   return files[Math.floor(Math.random()*files.length)];
 }
 
 function generateGandalfXml(req) {
 	var response = xmlbuilder.create("Response");
 
-	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "/password-entered.xml"), method: "GET" });
-	gather.ele("Play", null, getUrl(req, "/media/speakfriendandenter.mp3"));
+	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "password-entered.xml"), method: "GET" });
+	var challengeClip = pickRandomFile("media/challenge");
+	gather.ele("Play", null, getUrl(req, challengeClip));
 	return response;
 }
 
@@ -70,11 +79,17 @@ app.get("/password-entered.xml", function(req, res) {
 	var response;
 	if(digits == "12345") {
 		response = xmlbuilder.create("Response");
-		response.ele("Say", null, "Correct password");
+                var correctClip = pickRandomFile("media/wrong");
+                if(correctClip) {
+                   response.ele("Play", null, getUrl(req, correctClip));
+                } else {
+                   response.ele("Say", null, "Correct password");
+                }
 		response.ele("Play", { digits: '9' });
 	} else {
 		response = generateGandalfXml(req);
-		response.children[0].insertBefore("Play", null, getUrl(req, "/media/shallnotpass.wav"));
+                var wrongClip = pickRandomFile("media/wrong");
+		response.children[0].insertBefore("Play", null, getUrl(req, wrongClip));
 	}
 
 	res.header("Content-Type", "text/xml");
