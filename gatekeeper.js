@@ -18,6 +18,13 @@ var options = {
 	passphrase: nconf.get("passphrase"),
 };
 
+var username = nconf.get("username");
+var password = nconf.get("password");
+if(!username || !password) {
+   console.log("Must specify a username and password");
+   process.exit(1);
+}
+
 var app = express();
 
 
@@ -33,21 +40,22 @@ var auth = express.basicAuth(
 app.use(auth);
 app.use("/media", express.static(__dirname + "/media"));
 
-function generateGandalfXml(req, res) {
-	var rootUrl = req.protocol + "://" + req.get('host');
+function getUrl(req, file) {
+	return req.protocol + "://" + req.get('host') + ( file || "" );
+}
 
+function generateGandalfXml(req) {
 	var response = xmlbuilder.create("Response");
 
-	var gather = response.ele("Gather", { numDigits: "5", action: rootUrl + "/password-entered.xml", method: "GET" });
-	gather.ele("Play", null, rootUrl + "/media/shallnotpass.wav");
+	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "/password-entered.xml"), method: "GET" });
+	gather.ele("Play", null, getUrl(req, "/media/speakfriendandenter.mp3"));
 	return response;
 }
 
 app.get("/gatekeeper.xml", function(req, res) {
 	console.log("Call started: " + JSON.stringify(req.query));
 	
-
-	var response = generateGandalfXml(req, res);
+	var response = generateGandalfXml(req);
 	response.children[0].insertBefore("Play", { digits: '1' })
 		.com("Accept google voice call");
 
@@ -65,8 +73,8 @@ app.get("/password-entered.xml", function(req, res) {
 		response.ele("Say", null, "Correct password");
 		response.ele("Play", { digits: '9' });
 	} else {
-		response = generateGandalfXml(req, res);
-		response.children[0].insertBefore("Say", null, "Wrong password");
+		response = generateGandalfXml(req);
+		response.children[0].insertBefore("Play", null, getUrl(req, "/media/shallnotpass.wav"));
 	}
 
 	res.header("Content-Type", "text/xml");
