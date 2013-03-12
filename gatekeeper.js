@@ -49,7 +49,10 @@ function pickRandomFile(folder) {
    if(files.length == 0) {
       return null;
    }
-   return files[Math.floor(Math.random()*files.length)];
+   if(folder[folder.length - 1] != '/') {
+      folder += '/';
+   }
+   return folder + files[Math.floor(Math.random()*files.length)];
 }
 
 function generateGandalfXml(req) {
