@@ -49,7 +49,7 @@ app.get("/gatekeeper.xml", function(req, res) {
 
 	var response = generateGandalfXml(req, res);
 	response.children[0].insertBefore("Play", { digits: '1' })
-		.com("Accept google voice call");
+		.com("Accept google voice calls");
 
 	res.header("Content-Type", "text/xml");
 	var responseStr = response.end({ pretty: true });
