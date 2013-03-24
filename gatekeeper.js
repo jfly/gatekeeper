@@ -8,13 +8,15 @@ var xmlbuilder = require('xmlbuilder');
 nconf.argv().env().file({ file: "config.json" });
 nconf.defaults({
 	port: 8000,
-	passphrase: null
+	passphrase: null,
+	sslkey: 'server.key',
+	sslcrt: 'server.crt'
 });
 var port = nconf.get("port");
 
 var options = {
-	key: fs.readFileSync('server.key'),
-	cert: fs.readFileSync('server.crt'),
+	key: fs.readFileSync(nconf.get('sslkey')),
+	cert: fs.readFileSync(nconf.get('sslcrt')),
 	passphrase: nconf.get("passphrase"),
 };
 
