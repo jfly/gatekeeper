@@ -8,15 +8,24 @@ var xmlbuilder = require('xmlbuilder');
 nconf.argv().env().file({ file: "config.json" });
 nconf.defaults({
 	port: 8000,
-	passphrase: null
+	passphrase: null,
+	sslkey: 'server.key',
+	sslcrt: 'server.crt'
 });
 var port = nconf.get("port");
 
 var options = {
-	key: fs.readFileSync('server.key'),
-	cert: fs.readFileSync('server.crt'),
+	key: fs.readFileSync(nconf.get('sslkey')),
+	cert: fs.readFileSync(nconf.get('sslcrt')),
 	passphrase: nconf.get("passphrase"),
 };
+
+var username = nconf.get("username");
+var password = nconf.get("password");
+if(!username || !password) {
+   console.log("Must specify a username and password");
+   process.exit(1);
+}
 
 var app = express();
 
@@ -33,23 +42,36 @@ var auth = express.basicAuth(
 app.use(auth);
 app.use("/media", express.static(__dirname + "/media"));
 
-function generateGandalfXml(req, res) {
-	var rootUrl = req.protocol + "://" + req.get('host');
+function getUrl(req, file) {
+	return req.protocol + "://" + req.get('host') + ( "/" + file || "" );
+}
 
+function pickRandomFile(folder) {
+   var files = fs.readdirSync(folder);
+   if(files.length == 0) {
+      return null;
+   }
+   if(folder[folder.length - 1] != '/') {
+      folder += '/';
+   }
+   return folder + files[Math.floor(Math.random()*files.length)];
+}
+
+function generateGandalfXml(req) {
 	var response = xmlbuilder.create("Response");
     response.ele("Play", { digits: '9' });
     return response;//<<<
 
-	var gather = response.ele("Gather", { numDigits: "5", action: rootUrl + "/password-entered.xml", method: "GET" });
-	gather.ele("Play", null, rootUrl + "/media/speakfriendandenter.mp3");
+	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "password-entered.xml"), method: "GET" });
+	var challengeClip = pickRandomFile("media/challenge");
+	gather.ele("Play", null, getUrl(req, challengeClip));
 	return response;
 }
 
 app.get("/gatekeeper.xml", function(req, res) {
 	console.log("Call started: " + JSON.stringify(req.query));
 	
-
-	var response = generateGandalfXml(req, res);
+	var response = generateGandalfXml(req);
 	response.children[0].insertBefore("Play", { digits: '1' })
 		.com("Accept google voice call");
 
@@ -64,11 +86,17 @@ app.get("/password-entered.xml", function(req, res) {
 	var response;
 	if(digits == "12345") {
 		response = xmlbuilder.create("Response");
-		response.ele("Say", null, "Correct password");
+                var correctClip = pickRandomFile("media/correct");
+                if(correctClip) {
+                   response.ele("Play", null, getUrl(req, correctClip));
+                } else {
+                   response.ele("Say", null, "Correct password");
+                }
 		response.ele("Play", { digits: '9' });
 	} else {
-		response = generateGandalfXml(req, res);
-		response.children[0].insertBefore("Say", null, "Wrong password");
+		response = generateGandalfXml(req);
+                var wrongClip = pickRandomFile("media/wrong");
+		response.children[0].insertBefore("Play", null, getUrl(req, wrongClip));
 	}
 
 	res.header("Content-Type", "text/xml");
@@ -78,4 +106,6 @@ app.get("/password-entered.xml", function(req, res) {
 
 app.get("/gatekeeper-callend.xml", function(req, res) {
 	console.log("Call ended");
+	res.header("Content-Type", "text/plain");
+        res.end("Bye!");
 });
