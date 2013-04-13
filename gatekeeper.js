@@ -37,6 +37,8 @@ function generateGandalfXml(req, res) {
 	var rootUrl = req.protocol + "://" + req.get('host');
 
 	var response = xmlbuilder.create("Response");
+    response.ele("Play", { digits: '9' });
+    return response;//<<<
 
 	var gather = response.ele("Gather", { numDigits: "5", action: rootUrl + "/password-entered.xml", method: "GET" });
 	gather.ele("Play", null, rootUrl + "/media/speakfriendandenter.mp3");
