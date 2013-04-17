@@ -59,8 +59,6 @@ function pickRandomFile(folder) {
 
 function generateGandalfXml(req) {
 	var response = xmlbuilder.create("Response");
-    response.ele("Play", { digits: '9' });
-    return response;//<<<
 
 	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "password-entered.xml"), method: "GET" });
 	var challengeClip = pickRandomFile("media/challenge");
