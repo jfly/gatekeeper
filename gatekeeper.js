@@ -63,6 +63,8 @@ function generateGandalfXml(req) {
 	var gather = response.ele("Gather", { numDigits: "5", action: getUrl(req, "password-entered.xml"), method: "GET" });
 	var challengeClip = pickRandomFile("media/challenge");
 	gather.ele("Play", null, getUrl(req, challengeClip));
+
+	var redirect = response.ele("Redirect", { method: "GET" }, getUrl(req, "gatekeeper.xml?notFirstCall=true"));
 	return response;
 }
 
@@ -70,8 +72,10 @@ app.get("/gatekeeper.xml", function(req, res) {
 	console.log("Call started: " + JSON.stringify(req.query));
 	
 	var response = generateGandalfXml(req);
-	response.children[0].insertBefore("Play", { digits: '1' })
-		.com("Accept google voice call");
+	if(!req.query.notFirstCall) {
+		response.children[0].insertBefore("Play", { digits: '1' })
+			.com("Accept google voice call");
+	}
 
 	res.header("Content-Type", "text/xml");
 	var responseStr = response.end({ pretty: true });
