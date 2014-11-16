@@ -1,4 +1,4 @@
-var https = require('https');
+//<<<var https = require('https');
 var fs = require('fs');
 
 var express = require('express');
@@ -14,32 +14,34 @@ nconf.defaults({
 });
 var port = nconf.get("port");
 
-var options = {
-	key: fs.readFileSync(nconf.get('sslkey')),
-	cert: fs.readFileSync(nconf.get('sslcrt')),
-	passphrase: nconf.get("passphrase"),
-};
+var options = {};//<<<
+	//<<<key: fs.readFileSync(nconf.get('sslkey')),
+	//<<<cert: fs.readFileSync(nconf.get('sslcrt')),
+	//<<<passphrase: nconf.get("passphrase"),
+//<<<};
 
-var username = nconf.get("username");
-var password = nconf.get("password");
-if(!username || !password) {
-   console.log("Must specify a username and password");
-   process.exit(1);
-}
+//<<<var username = nconf.get("username");
+//<<<var password = nconf.get("password");
+//<<<if(!username || !password) {
+   //<<<console.log("Must specify a username and password");
+   //<<<process.exit(1);
+//<<<}
 
 var app = express();
 
+var server = app.listen(port, function() {
+	var host = server.address().address;
+	var port = server.address().port;
 
-https.createServer(options, app).listen(port, function() {
-	console.log("Listening on port " + port);
+	console.log('Listening at http://%s:%s', host, port);
 });
 
-var auth = express.basicAuth(
-	nconf.get("username"),
-	nconf.get("password")
-);
+//<<<var auth = express.basicAuth(
+	//<<<nconf.get("username"),
+	//<<<nconf.get("password")
+//<<<);
 
-app.use(auth);
+//<<<app.use(auth);
 app.use("/media", express.static(__dirname + "/media"));
 
 function getUrl(req, file) {
