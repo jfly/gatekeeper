@@ -63,6 +63,13 @@ function pickRandomFile(folder) {
    return folder + files[Math.floor(Math.random()*files.length)];
 }
 
+function generateCallForwardXml(req, phoneNumber) {
+    var response = xmlbuilder.create("Response");
+
+    var dial = response.ele("Dial", {}, phoneNumber);
+    return response;
+}
+
 function generateGandalfXml(req) {
     var response = xmlbuilder.create("Response");
 
@@ -78,6 +85,7 @@ app.get("/gatekeeper.xml", function(req, res) {
     console.log("Call started: " + JSON.stringify(req.query));
 
     var response = generateGandalfXml(req);
+    //var response = generateCallForwardXml(req, "949-981-9345"); // jfly cell
     if(!req.query.notFirstCall) {
         response.children[0].insertBefore("Play", { digits: '1' })
             .com("Accept google voice call");
