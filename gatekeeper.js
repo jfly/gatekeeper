@@ -123,5 +123,11 @@ app.get("/password-entered.xml", function(req, res) {
 app.get("/gatekeeper-callend.xml", function(req, res) {
     console.log("Call ended");
     res.header("Content-Type", "text/plain");
-        res.end("Bye!");
+    res.end("Bye!");
+});
+
+app.get("/gatekeeper-sms.xml", function(req, res) {
+    console.log("Incoming SMS" + JSON.stringify(req.query));
+    res.header("Content-Type", "text/plain");
+    res.end("Thanks for the message!")
 });
