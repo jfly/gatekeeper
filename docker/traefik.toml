@@ -1,0 +1,31 @@
+debug = true
+# checkNewVersion = true
+# logLevel = "ERROR"
+defaultEntryPoints = ["https","http"]
+
+[api]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+
+[retry]
+
+[docker]
+# endpoint = "unix:///var/run/docker.sock"
+# domain = "moria.jflei.com"
+# watch = true
+# exposedbydefault = false
+
+[acme]
+email = "jeremyfleischman@gmail.com"
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+  [acme.httpChallenge]
+    entryPoint = "http"

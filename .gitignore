@@ -1,21 +1,4 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-*.swp
+__pycache__/
+.bootstrapped
 
-pids
-logs
-results
-
-npm-debug.log
-
-node_modules/
-config.json
-server.crt
-server.csr
-server.key
+instance/gatekeeper.cfg

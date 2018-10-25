@@ -1,0 +1,7 @@
+# python -c 'import os; print(os.urandom(16))'
+SECRET_KEY = "supersekrit"
+
+# Follow instructions on https://flask-dance.readthedocs.io/en/latest/quickstarts/google.html
+# to fill in this Google stuff.
+GOOGLE_CLIENT_ID = None
+GOOGLE_CLIENT_SECRET = None
