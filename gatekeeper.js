@@ -1,4 +1,3 @@
-//<<<var https = require('https');
 var fs = require('fs');
 
 var express = require('express');
@@ -8,24 +7,10 @@ var xmlbuilder = require('xmlbuilder');
 nconf.argv().env().file({ file: "config.json" });
 nconf.defaults({
     port: 8000,
-    passphrase: null,
-    sslkey: 'server.key',
-    sslcrt: 'server.crt'
 });
 var port = nconf.get("port");
 
-var options = {};//<<<
-    //<<<key: fs.readFileSync(nconf.get('sslkey')),
-    //<<<cert: fs.readFileSync(nconf.get('sslcrt')),
-    //<<<passphrase: nconf.get("passphrase"),
-//<<<};
-
-//<<<var username = nconf.get("username");
-//<<<var password = nconf.get("password");
-//<<<if(!username || !password) {
-   //<<<console.log("Must specify a username and password");
-   //<<<process.exit(1);
-//<<<}
+var options = {}
 
 var app = express();
 app.enable('trust proxy');//<<<
@@ -37,12 +22,6 @@ var server = app.listen(port, function() {
     console.log('Listening at http://%s:%s', host, port);
 });
 
-//<<<var auth = express.basicAuth(
-    //<<<nconf.get("username"),
-    //<<<nconf.get("password")
-//<<<);
-
-//<<<app.use(auth);
 app.use("/media", express.static(__dirname + "/media"));
 
 function getUrl(req, file) {
