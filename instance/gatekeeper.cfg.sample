@@ -5,3 +5,6 @@ SECRET_KEY = "supersekrit"
 # to fill in this Google stuff.
 GOOGLE_CLIENT_ID = None
 GOOGLE_CLIENT_SECRET = None
+
+# You can find this at https://www.twilio.com/console.
+TWILIO_AUTH_TOKEN = None

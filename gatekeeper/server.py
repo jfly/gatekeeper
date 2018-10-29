@@ -1,8 +1,12 @@
-import oauthlib
+import logging
+from functools import wraps
 
-from flask import Flask, redirect, url_for, render_template
-from flask_dance.contrib.google import make_google_blueprint, google
+import oauthlib
 from werkzeug.contrib.fixers import ProxyFix
+from requestlogger import WSGILogger, ApacheFormatter
+from twilio.request_validator import RequestValidator
+from flask_dance.contrib.google import make_google_blueprint, google
+from flask import abort, current_app, Flask, redirect, request, url_for, render_template
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('gatekeeper.cfg')
@@ -16,6 +20,43 @@ blueprint = make_google_blueprint(
 )
 app.register_blueprint(blueprint, url_prefix="/login")
 app.wsgi_app = ProxyFix(app.wsgi_app)
+
+### Begin logging configuration
+# This feels unecessarily complicated...
+# I guess flask run internally uses werkzeug, which does its own request
+# logging in additionto the request logging we set up here. To have consisency
+# between production and development, we disable werkzeug request logging here,
+# and leave all the logging to WSGILogger.
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('werkzeug')
+logger.setLevel(logging.WARNING)
+app.wsgi_app = WSGILogger(app.wsgi_app, [], ApacheFormatter())
+### End logging configuration
+
+# Copied from
+# https://www.twilio.com/docs/usage/tutorials/how-to-secure-your-flask-app-by-validating-incoming-twilio-requests
+def validate_twilio_request(f):
+    """Validates that incoming requests genuinely originated from Twilio."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Create an instance of the RequestValidator class.
+        validator = RequestValidator(app.config['TWILIO_AUTH_TOKEN'])
+
+        # Validate the request using its URL, POST data,
+        # and X-TWILIO-SIGNATURE header.
+        request_valid = validator.validate(
+            request.url,
+            request.form,
+            request.headers.get('X-TWILIO-SIGNATURE', ''),
+        )
+
+        # Continue processing the request if it's valid (or if DEBUG is True)
+        # and return a 403 error if it's not.
+        if request_valid or current_app.debug:
+            return f(*args, **kwargs)
+        else:
+            return abort(403)
+    return decorated_function
 
 @app.route("/")
 def index():
@@ -43,6 +84,26 @@ def test1():
 @app.route("/test2")
 def test2():
     return url_for('.index', _external=True)
+
+@app.route("/gatekeeper.xml")
+@validate_twilio_request
+def gatekeeper():
+    from twilio.twiml.voice_response import VoiceResponse #<<<
+
+    resp = VoiceResponse()
+
+    # <Say> a message to the caller
+    from_number = "HIYA" #request.values['From']
+    body = """
+    Thanks for calling!
+
+    Your phone number is {0}. I got your call because of Twilio's webhook.
+
+    Goodbye!""".format(' '.join(from_number))
+    resp.say(body)
+
+    # Return the TwiML
+    return str(resp)
 
 def get_app():
     return app

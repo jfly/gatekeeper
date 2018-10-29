@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c8b5d834c9deb49caddc529a3666c54101b579605c0ac01ba7e81bc75a654a75"
+            "sha256": "cfddefad2483de41edb1f409b7987d47de8d239dd8bfa319ccffda6569cb7f95"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -93,11 +93,33 @@
             ],
             "version": "==2.1.0"
         },
+        "pyjwt": {
+            "hashes": [
+                "sha256:30b1380ff43b55441283cc2b2676b755cca45693ae3097325dea01f3d110628c",
+                "sha256:4ee413b357d53fd3fb44704577afac88e72e878716116270d722723d65b42176"
+            ],
+            "version": "==1.6.4"
+        },
+        "pysocks": {
+            "hashes": [
+                "sha256:3fe52c55890a248676fd69dc9e3c4e811718b777834bcaab7a8125cf9deac672"
+            ],
+            "markers": "python_version >= '3.0'",
+            "version": "==1.6.8"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:642253af8eae734d1509fc6ac9c1aee5e5b69d76392660889979b9870610a46b",
+                "sha256:91e3ccf2c344ffaa6defba1ce7f38f97026943f675b7703f44789768e4cb0ece"
+            ],
+            "version": "==2018.6"
+        },
         "requests": {
             "hashes": [
                 "sha256:99dcfdaaeb17caf6e526f32b6a7b780461512ab3f1d992187801694cba42770c",
                 "sha256:a84b8c9ab6239b578f22d1c21d51b696dcfe004032bb80ea832398d6909d7279"
             ],
+            "markers": "python_version >= '3.0'",
             "version": "==2.20.0"
         },
         "requests-oauthlib": {
@@ -113,6 +135,14 @@
                 "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
             ],
             "version": "==1.11.0"
+        },
+        "twilio": {
+            "hashes": [
+                "sha256:07b315e5dc6b3e0a7fed13237a46a3a5e3fe20bf10e6ac91a3b1304c85318b2b",
+                "sha256:d67cec5d0b0be3b92d31051ca3f2faec247e2201a474237e93587aa08d64fa75"
+            ],
+            "index": "pypi",
+            "version": "==6.19.1"
         },
         "urllib3": {
             "hashes": [
@@ -141,6 +171,13 @@
                 "sha256:d5da73735293558eb1651ee2fddc4d0dedcfa06538b8813a2e20011583c9e49b"
             ],
             "version": "==0.14.1"
+        },
+        "wsgi-request-logger": {
+            "hashes": [
+                "sha256:445d7ec52799562f812006394d0b4a7064b37084c6ea6bd74ea7a2136c97ed83"
+            ],
+            "index": "pypi",
+            "version": "==0.4.6"
         }
     },
     "develop": {

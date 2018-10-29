@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 flask-dance = "*"
 waitress = "*"
+twilio = "*"
+wsgi-request-logger = "*"
 
 [dev-packages]
 pylint = "*"
