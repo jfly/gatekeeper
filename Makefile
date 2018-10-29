@@ -1,7 +1,7 @@
 # --------------------------- local dev ----------------------------
 .PHONY: run
 run: .bootstrapped
-	FLASK_ENV=development OAUTHLIB_INSECURE_TRANSPORT=1 FLASK_APP=gatekeeper.server pipenv run flask run
+	FLASK_ENV=development OAUTHLIB_INSECURE_TRANSPORT=1 FLASK_APP=gatekeeper.server:create_app pipenv run flask run
 
 .bootstrapped: Pipfile Pipfile.lock
 	pipenv install
