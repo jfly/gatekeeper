@@ -88,6 +88,9 @@ app.get("/password-entered.xml", function(req, res) {
             response.ele("Say", null, "Correct password");
         }
         response.ele("Play", { digits: '9' });
+    } else if(digits == "54321") {
+        response = xmlbuilder.create("Response");
+        response.ele("Play", { digits: '9' });
     } else {
         response = generateGandalfXml(req);
         var wrongClip = pickRandomFile("media/wrong");
