@@ -1,10 +1,23 @@
 <html>
   <head>
-    <title>Templating in Flask</title>
+    <title>Moria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        h1 {
+            text-align: center;
+        }
+    </style>
   </head>
   <body>
-    <h1>Hello, {{ user['given_name'] }}!</h1>
-    <p>Welcome to the world of Flask!</p>
-    <img src="{{ user['picture'] }}" />
+    <h1>Hello, {{ user.short_name }}!</h1>
+
+    {% if user.trusted() %}
+        {% if texts %}
+            <h2>Recent texts</h2>
+            {% for text in texts %}
+                {{ text.from_number }}: {{ text.body }}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
   </body>
 </html>

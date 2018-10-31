@@ -4,12 +4,15 @@ run: .bootstrapped
 	FLASK_ENV=development OAUTHLIB_INSECURE_TRANSPORT=1 FLASK_APP=gatekeeper.server:create_app pipenv run flask run
 
 .bootstrapped: Pipfile Pipfile.lock
-	pipenv install
+	pipenv install --dev
 	touch .bootstrapped
 
 .PHONY: lint
-lint:
+lint: .bootstrapped
 	pylint gatekeeper
+
+clean:
+	rm -f .bootstrapped
 
 # --------------------------- deployment ---------------------------
 .PHONY: deploy

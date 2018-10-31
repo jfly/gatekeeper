@@ -3,4 +3,5 @@
 disable=invalid-name,
         no-else-return,
         missing-docstring,
+        too-few-public-methods,
         unused-variable, # Disabled because of https://github.com/pallets/flask/issues/2434
