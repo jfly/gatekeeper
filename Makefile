@@ -20,7 +20,7 @@ deploy: docker
 	docker login
 	docker push jfly/gatekeeper
 	scp docker/traefik.toml moria:/tmp/traefik.toml
-	rsync -azP --delete instance moria:/tmp/gatekeeper-instance
+	rsync -azP --delete instance/ moria:/tmp/gatekeeper-instance/
 	# TODO - potentially move this to systemd? see https://coreos.com/os/docs/latest/getting-started-with-systemd.html
 	ssh moria "\
 		set -e; \
