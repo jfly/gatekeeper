@@ -1,23 +1,28 @@
 <html>
-  <head>
-    <title>Moria</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        h1 {
-            text-align: center;
-        }
-    </style>
-  </head>
-  <body>
-    <h1>Hello, {{ user.short_name }}!</h1>
+    <head>
+        <title>Moria</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+h1 {
+    text-align: center;
+}
+        </style>
+    </head>
+    <body>
+        {% if user %}
+            <a href="/logout">logout</a>
+            <h1>Hello, {{ user.short_name }}!</h1>
 
-    {% if user.trusted() %}
-        {% if texts %}
-            <h2>Recent texts</h2>
-            {% for text in texts %}
-                {{ text.from_number }}: {{ text.body }}
-            {% endfor %}
+            {% if user.trusted() %}
+                {% if texts %}
+                    <h2>Recent texts</h2>
+                    {% for text in texts %}
+                        {{ text.from_number }}: {{ text.body }}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <a href="/login">login</a>
         {% endif %}
-    {% endif %}
-  </body>
+    </body>
 </html>

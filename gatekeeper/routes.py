@@ -1,8 +1,10 @@
 import os
 import random
 import logging
+import dataclasses
 
 from flask import request
+from flask import session
 from flask import url_for
 from flask import redirect
 from flask import render_template
@@ -10,7 +12,6 @@ from flask_dance.contrib.google import google
 from twilio.twiml.voice_response import Gather
 from twilio.twiml.voice_response import VoiceResponse
 
-import dataclasses
 from .util import validate_twilio_request
 
 logger = logging.getLogger(__name__)
@@ -21,15 +22,28 @@ def add_routes(app):
     @app.route("/")
     def index():
         if not google.authorized:
-            return redirect(url_for("google.login"))
-        resp = google.get("/oauth2/v2/userinfo")
-        assert resp.ok, resp.text
-        user = User.from_google_userinfo(resp.json())
+            user = None
+        else:
+            resp = google.get("/oauth2/v2/userinfo")
+            assert resp.ok, resp.text
+            user = User.from_google_userinfo(resp.json())
         return render_template(
             'index.html',
             user=user,
             texts=texts,
         )
+
+    @app.route("/login")
+    def login():
+        if google.authorized:
+            return redirect(url_for(".index"))
+        else:
+            return redirect(url_for("google.login"))
+
+    @app.route("/logout")
+    def logout():
+        session.clear()
+        return redirect(url_for(".index"))
 
     @app.route("/gatekeeper.xml", methods=['GET', 'POST'])
     @validate_twilio_request
