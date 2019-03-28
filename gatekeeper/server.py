@@ -15,7 +15,7 @@ def create_app():
     ### Begin logging configuration
     # This feels unecessarily complicated...
     # I guess flask run internally uses werkzeug, which does its own request
-    # logging in additionto the request logging we set up here. To have consisency
+    # logging in addition to the request logging we set up here. To have consistency
     # between production and development, we disable werkzeug request logging here,
     # and leave all the logging to WSGILogger.
     logging.basicConfig(level=logging.INFO)

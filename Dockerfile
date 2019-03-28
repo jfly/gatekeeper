@@ -11,4 +11,4 @@ RUN pipenv install --system --deploy
 COPY gatekeeper ./gatekeeper
 
 EXPOSE 5000
-ENTRYPOINT ["/usr/local/bin/waitress-serve", "--port=5000", "--call", "gatekeeper:server.create_app"]
+ENTRYPOINT ["/usr/local/bin/waitress-serve", "--port=5000", "--url-scheme=https", "--call", "gatekeeper:server.create_app"]
