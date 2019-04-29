@@ -19,16 +19,16 @@ clean:
 deploy: docker
 	docker login
 	docker push jfly/gatekeeper
-	scp docker/traefik.toml moria:/tmp/traefik.toml
-	rsync -azP --delete instance/ moria:/tmp/gatekeeper-instance/
-	# TODO - potentially move this to systemd? see https://coreos.com/os/docs/latest/getting-started-with-systemd.html
+	# TODO - find a better directory than /home/jeremyfleischman
+	scp docker/traefik.toml moria:/home/jeremyfleischman/traefik.toml
+	rsync -azP --delete instance/ moria:/home/jeremyfleischman/gatekeeper-instance/
 	ssh moria "\
 		set -e; \
 		docker pull jfly/gatekeeper; \
 		docker stop gatekeeper && docker rm gatekeeper || true; \
-		docker run -d --name gatekeeper -p 5000:5000 --volume /tmp/gatekeeper-instance:/app/instance --label=traefik.frontend.rule=Host:moria.jflei.com jfly/gatekeeper:latest; \
+		docker run -d --restart unless-stopped --name gatekeeper -p 5000:5000 --volume /home/jeremyfleischman/gatekeeper-instance:/app/instance --label=traefik.frontend.rule=Host:moria.jflei.com jfly/gatekeeper:latest; \
 		docker stop traefik && docker rm traefik || true; \
-		touch /tmp/acme.json && chmod 600 /tmp/acme.json && docker run -d --name traefik --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/traefik.toml:/traefik.toml --volume /tmp/acme.json:/acme.json -p 8080:8080 -p 80:80 -p 443:443 traefik; \
+		touch /home/jeremyfleischman/acme.json && chmod 600 /home/jeremyfleischman/acme.json && docker run -d --restart unless-stopped --name traefik --volume /var/run/docker.sock:/var/run/docker.sock --volume /home/jeremyfleischman/traefik.toml:/traefik.toml --volume /home/jeremyfleischman/acme.json:/acme.json -p 8080:8080 -p 80:80 -p 443:443 traefik; \
 	"
 
 .PHONY: docker
