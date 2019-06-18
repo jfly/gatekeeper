@@ -24,6 +24,7 @@ deploy: docker
 	rsync -azP --delete instance/ moria:/home/jeremyfleischman/gatekeeper-instance/
 	ssh moria "\
 		set -e; \
+		sudo systemctl enable docker; echo 'Without this, docker does not actually start on boot. See: https://serverfault.com/a/743097'; \
 		docker pull jfly/gatekeeper; \
 		docker stop gatekeeper && docker rm gatekeeper || true; \
 		docker run -d --restart unless-stopped --name gatekeeper -p 5000:5000 --volume /home/jeremyfleischman/gatekeeper-instance:/app/instance --label=traefik.frontend.rule=Host:moria.jflei.com jfly/gatekeeper:latest; \
