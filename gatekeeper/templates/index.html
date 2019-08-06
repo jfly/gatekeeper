@@ -16,9 +16,11 @@ h1 {
             {% if user.trusted() %}
                 {% if texts %}
                     <h2>Recent texts</h2>
-                    {% for text in texts %}
-                        {{ text.from_number }}: {{ text.body }}
-                    {% endfor %}
+                    <ul>
+                        {% for text in texts %}
+                            <li>{{ text.from_number }}: {{ text.body }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
             {% endif %}
         {% else %}
