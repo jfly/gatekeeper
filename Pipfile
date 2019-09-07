@@ -11,7 +11,11 @@ twilio = "*"
 wsgi-request-logger = "*"
 
 [dev-packages]
+black = "== 19.3b0"  # Any version will do. Pinning enables pipenv to install without us allowing pre-releases for other deps.
+isort = "*"
 pylint = "*"
+pulumi = "*"
+pulumi-gcp = "*"
 
 [requires]
 python_version = "3.7"
