@@ -25,11 +25,11 @@ deploy: docker
 	ssh moria "\
 		set -e; \
 		sudo systemctl enable docker; echo 'Without this, docker does not actually start on boot. See: https://serverfault.com/a/743097'; \
-		docker pull jfly/gatekeeper; \
-		docker stop gatekeeper && docker rm gatekeeper || true; \
-		docker run -d --restart unless-stopped --name gatekeeper -p 5000:5000 --volume /home/jeremyfleischman/gatekeeper-instance:/app/instance --label=traefik.frontend.rule=Host:moria.jflei.com jfly/gatekeeper:latest; \
-		docker stop traefik && docker rm traefik || true; \
-		touch /home/jeremyfleischman/acme.json && chmod 600 /home/jeremyfleischman/acme.json && docker run -d --restart unless-stopped --name traefik --volume /var/run/docker.sock:/var/run/docker.sock --volume /home/jeremyfleischman/traefik.toml:/traefik.toml --volume /home/jeremyfleischman/acme.json:/acme.json -p 8080:8080 -p 80:80 -p 443:443 traefik; \
+		sudo docker pull jfly/gatekeeper; \
+		sudo docker stop gatekeeper && sudo docker rm gatekeeper || true; \
+		sudo docker run -d --restart unless-stopped --name gatekeeper -p 5000:5000 --volume /home/jeremyfleischman/gatekeeper-instance:/app/instance --label=traefik.frontend.rule=Host:moria.jflei.com jfly/gatekeeper:latest; \
+		sudo docker stop traefik && sudo docker rm traefik || true; \
+		touch /home/jeremyfleischman/acme.json && chmod 600 /home/jeremyfleischman/acme.json && sudo docker run -d --restart unless-stopped --name traefik --volume /var/run/docker.sock:/var/run/docker.sock --volume /home/jeremyfleischman/traefik.toml:/traefik.toml --volume /home/jeremyfleischman/acme.json:/acme.json -p 8080:8080 -p 80:80 -p 443:443 traefik:v1.7; \
 	"
 
 .PHONY: docker

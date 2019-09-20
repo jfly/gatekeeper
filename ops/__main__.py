@@ -3,14 +3,16 @@ from pulumi_gcp import compute
 
 network = compute.Network("network")
 firewall = compute.Firewall(
-    "firewall", network=network.id, allows=[dict(protocol="tcp", ports=["22", "80"])]
+    "firewall",
+    network=network.id,
+    allows=[dict(protocol="tcp", ports=["22", "80", "443"])],
 )
 
 addr = compute.address.Address("moria", region="us-west1")
 
 startupScript = """#!/bin/bash
-echo "Hello, World!" > index.html
-python3 -m http.server 80
+apt-get update
+apt-get install -y docker.io
 """
 
 instance = compute.Instance(

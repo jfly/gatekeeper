@@ -1,6 +1,6 @@
 debug = true
 # checkNewVersion = true
-# logLevel = "ERROR"
+logLevel = "DEBUG"
 defaultEntryPoints = ["https","http"]
 
 [api]
